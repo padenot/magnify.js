@@ -1,0 +1,22 @@
+img[magnified=true] {
+  position: absolute;
+  -webkit-transition-property: left, top, width, height, opacity;
+  -webkit-transition-duration: 1s;
+  -webkit-transition-timing-function: ease-in-out;
+  -moz-transition-property: left, top, width, height, opacity;
+  -moz-transition-duration: 1s;
+  -moz-transition-timing-function: ease-in-out;
+  opacity: 1;
+  box-shadow: 0px 0px 24px black;
+  -moz-box-shadow: 0px 0px 24px black;
+  -webkit-box-shadow: 0px 0px 24px black;
+  border-radius: 10px;
+}
+
+img.zoomed {
+  opacity: 0;
+}
+
+img:not([magnified=true]) {
+  cursor: pointer;
+}
