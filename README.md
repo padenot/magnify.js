@@ -7,6 +7,8 @@ as hell, and not modern at all. It worked on IE, though (but honestly, who cares
 This has been tested on Firefox, Chromium and Opera, and works equally well on
 those browsers. It should work in any decent Webkit browser (like Safari).
 
+You can see a demo at <http://paul.cx/public/magnify.js/>.
+
 ## Usage
 
 Drop that in your template, and all the images will be zoomable on click.
