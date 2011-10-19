@@ -25,6 +25,7 @@ function init_magnify() {
 
   var original = null;
   var magnified = null;
+  var throbber_path = "throbber.svg";
 
   function compute_scale_factor(img) {
     // Magic number to put a little margin.
@@ -60,6 +61,45 @@ function init_magnify() {
     }, 1000);
   }
 
+  function get_throbber(on) {
+    var p = on.parentNode;
+    var t = document.createElement('img');
+    t.className = "throbber";
+    t.src = throbber_path;
+    p.appendChild(t);
+  }
+
+  function remove_throbber(t) {
+    t.parentNode.removeChild(t);
+  }
+
+  function animate(element, zoomed) {
+    console.log(element);
+    var pos = getOffset(element);
+    // Put the image about to be zoomed over the image
+    zoomed.style.width = element.width + "px";
+    zoomed.style.height = element.height + "px";
+    zoomed.style.left = pos.left + "px";
+    zoomed.style.top = pos.top + "px";
+
+    $('body').appendChild(zoomed);
+    zoomed.setAttribute("magnified", "true");
+    magnified = zoomed;
+    original = element;
+
+    // Magic
+    var ratio = compute_scale_factor(original);
+    zoomed.style.width = original.width*ratio + "px";
+    zoomed.style.height = original.height*ratio + "px";
+    zoomed.style.opacity = "1";
+    zoomed.style.left = window.innerWidth / 2 - original.width * ratio / 2 + "px";
+    // center on viewport
+    zoomed.style.top = window.scrollY + window.innerHeight / 2 - element.height*ratio / 2 + "px";
+    zoomed.addEventListener('click', function(e) {
+      demagnify_image(e.target);
+    }, false);
+  }
+
   function magnify_image(e) {
     // possibly demagnify other images
     if (original !== null && original == e.target) {
@@ -71,37 +111,21 @@ function init_magnify() {
     if (magnified !== null) {
       demagnify_image(magnified);
     }
+
     var or = e.target;
     var zoomed = document.createElement('img');
     zoomed.className = "zoomed";
     if (or.parentNode.tagName == "A") {
       zoomed.src = or.parentNode.href;
+      get_throbber(or);
+      zoomed.addEventListener('load', function() {
+        remove_throbber(or.parentNode.lastChild);
+        animate(or, zoomed);
+      }, false);
     } else {
       zoomed.src = or.src;
+      animate(or, zoomed);
     }
-    var pos = getOffset(e.target);
-    // Put the image about to be zoomed over the image
-    zoomed.style.width = or.width + "px";
-    zoomed.style.height = or.height + "px";
-    zoomed.style.left = pos.left + "px";
-    zoomed.style.top = pos.top + "px";
-
-    $('body').appendChild(zoomed);
-    zoomed.setAttribute("magnified", "true");
-    magnified = zoomed;
-    original = e.target;
-
-    // Magic
-    var ratio = compute_scale_factor(original);
-    zoomed.style.width = original.width*ratio + "px";
-    zoomed.style.height = original.height*ratio + "px";
-    zoomed.style.opacity = "1";
-    zoomed.style.left = window.innerWidth / 2 - original.width * ratio / 2 + "px";
-    // center on viewport
-    zoomed.style.top = window.scrollY + window.innerHeight / 2 - or.height*ratio / 2 + "px";
-    zoomed.addEventListener('click', function(e) {
-      demagnify_image(e.target);
-    }, false);
   }
 
   function preventDefault(e) {
@@ -120,6 +144,11 @@ function init_magnify() {
     images_in_links[i].addEventListener("click", magnify_image, false);
     images_in_links[i].style.cursor = "pointer";
   }
+
+//  var throbber = document.createElement('img');
+ // throbber.src = throbber_path;
+  //throbber.style.visibility = "hidden";
+  //$('body').appendChild(throbber);
 
   // Escape closes a magnified image.
   document.addEventListener("keydown", function(e) {

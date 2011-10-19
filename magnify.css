@@ -22,3 +22,8 @@ img.zoomed {
   opacity: 0;
 }
 
+img.throbber {
+  position: absolute;
+  width: 27px;
+  height: 27px;
+}
