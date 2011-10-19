@@ -12,6 +12,7 @@ You can see a demo at <http://paul.cx/public/magnify.js/>.
 ## Usage
 
 Drop that in your template, and all the images will be zoomable on click.
+
 ```html
 <link type="text/css" rel="stylesheet" href="path/to/magnify.css">
 <script type="text/javascript" src="path/to/magnify.js"></script>
