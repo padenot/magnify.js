@@ -74,7 +74,11 @@ function init_magnify() {
     var or = e.target;
     var zoomed = document.createElement('img');
     zoomed.className = "zoomed";
-    zoomed.src = or.src;
+    if (or.parentNode.tagName == "A") {
+      zoomed.src = or.parentNode.href;
+    } else {
+      zoomed.src = or.src;
+    }
     var pos = getOffset(e.target);
     // Put the image about to be zoomed over the image
     zoomed.style.width = or.width + "px";
@@ -100,10 +104,21 @@ function init_magnify() {
     }, false);
   }
 
+  function preventDefault(e) {
+    e.preventDefault();
+    return false;
+  }
   var images = $$("img:not(.nomagnify)");
   for(var i = 0; i < images.length; i++) {
     images[i].addEventListener("click", magnify_image, false);
     images[i].style.cursor = "pointer";
+  }
+
+  var images_in_links = $$("a > img:not(.nomagnify)");
+  for(i = 0; i < images_in_links.length; i++) {
+    images_in_links[i].parentNode.addEventListener("click", preventDefault, false);
+    images_in_links[i].addEventListener("click", magnify_image, false);
+    images_in_links[i].style.cursor = "pointer";
   }
 
   // Escape closes a magnified image.
